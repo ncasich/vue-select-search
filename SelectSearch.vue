@@ -30,7 +30,6 @@
         watch: {
             value: function (value) {
                 if (this.select) {
-                    console.log([...value]);
                     if ([...value].sort().join(",") !== [...$(this.$el).val()].sort().join(",")) {
                         this.select.val(value).trigger('change');
                     }
