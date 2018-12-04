@@ -7,6 +7,9 @@
 <script>
     require('select2/dist/js/select2.full.js');
 
+    require('select2/dist/css/select2.min.css');
+    require('select2-bootstrap-theme/dist/select2-bootstrap.min.css');
+
     export default {
         name: "select-search",
         props: ['value', 'holder', 'disabled', 'multiple'],
