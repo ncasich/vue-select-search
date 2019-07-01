@@ -25,7 +25,10 @@
             if (that.holder) {
                 props.placeholder = that.holder;
             }
-            that.select = $(that.$refs.select).select2(props);
+            that.select = $(that.$refs.select).select2(props)
+                .on('change', function () {
+                    that.$emit('input', $(this).val());
+                });
         },
         watch: {
             value: function (value) {
