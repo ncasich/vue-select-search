@@ -33,7 +33,11 @@
         watch: {
             value: function (value) {
                 if (this.select) {
-                    if ([...value].sort().join(",") !== [...$(this.$el).val()].sort().join(",")) {
+                    try {
+                        if ([...value].sort().join(",") !== [...$(this.$el).val()].sort().join(",")) {
+                            this.select.val(value).trigger('change');
+                        }
+                    } catch (e) {
                         this.select.val(value).trigger('change');
                     }
                 }
