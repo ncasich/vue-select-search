@@ -27,7 +27,7 @@
             }
             that.select = $(that.$refs.select).select2(props)
                 .on('change', function () {
-                    that.$emit('input', $(this).val());
+                    that.$emit('input', that.multiple && !$(this).val() ? [] : $(this).val());
                 });
         },
         watch: {
@@ -38,7 +38,9 @@
                             this.select.val(value).trigger('change');
                         }
                     } catch (e) {
-                        this.select.val(value).trigger('change');
+                        if (!this.multiple) {
+                            this.select.val(value).trigger('change');
+                        }
                     }
                 }
             },
