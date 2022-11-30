@@ -26,31 +26,34 @@
             init() {
                 this.select = $(this.$refs.select).select2(this.properties)
                     .on('select2:selecting', this.changing)
+                    .on('select2:unselecting', this.changing)
                     .on('select2:select', this.input)
+                    .on('select2:unselect', this.input)
                     .on('change', this.change)
-                    .on('select2:opening', this.log)
-                    .on('select2:closing', this.log)
-                    .on('select2:clearing', this.log);
+                    .on('select2:opening', this.opening)
+                    .on('select2:closing', this.closing)
+                    .on('select2:clearing', this.clearing);
             },
             opening(e) {
-                this.$emit('opening', e);
+                this.$emit('opening', e, this.parseValue(e));
             },
             input(e) {
-                this.$emit('input', this.parseValue(e.target.value));
+                this.$emit('input', this.parseValue(e));
             },
             changing(e) {
-                this.$emit('changing', e);
+                this.$emit('changing', e, this.parseValue(e));
             },
             change(e) {
-                this.$emit('change', e, this.parseValue(e.target.value));
+                this.$emit('change', e, this.parseValue(e));
             },
             closing(e) {
-                this.$emit('closing', e, this.parseValue(e.target.value));
+                this.$emit('closing', e, this.parseValue(e));
             },
             clearing(e) {
-                this.$emit('clearing', e, this.parseValue(e.target.value));
+                this.$emit('clearing', e, this.parseValue(e));
             },
-            parseValue(val) {
+            parseValue(e) {
+                let val = $(e.target).val();
                 return this.multiple && !val ? [] : val;
             },
             string(val) {
