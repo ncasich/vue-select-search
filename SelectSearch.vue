@@ -24,6 +24,9 @@
         },
         methods: {
             init() {
+                if (this.select) {
+                    this.select.select2('destroy');
+                }
                 this.select = $(this.$refs.select).select2(this.properties)
                     .on('select2:selecting', this.changing)
                     .on('select2:unselecting', this.changing)
