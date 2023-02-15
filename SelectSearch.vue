@@ -2,7 +2,7 @@
     <select class="form-control" ref="select" v-model="value" :disabled="disabled" :multiple="multiple">
         <slot>
             <template v-if="!!options && options.length">
-                <option v-for="option in options" :value="option.id">{{ option.name }}</option>
+                <option v-for="option in options" :key="option.id" :value="option.id">{{ option.name }}</option>
             </template>
         </slot>
     </select>
