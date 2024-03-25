@@ -1,5 +1,7 @@
 <template>
     <select class="form-select"
+            :value="modelValue"
+            @change="input($event)"
             :ref="id"
             :id="id"
             :disabled="disabled"
@@ -16,11 +18,12 @@
 </template>
 
 <script>
-
-import select2 from 'select2';
+import $ from 'jquery';
+import 'select2/dist/js/select2.full';
 import 'select2/dist/css/select2.min.css'
 import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 import {v4 as uuid} from 'uuid';
+import {Exception} from "sass";
 
 export default {
     name: "select-search",
@@ -36,7 +39,7 @@ export default {
             }
         },
     },
-    emits: ['update:modelValue', 'change', 'changing', 'opening', 'closing', 'clearing'],
+    emits: ['update:modelValue', 'change', 'changing', 'opening', 'closing', 'clearing', 'selecting', 'unselecting'],
     data() {
         return {
             select: null,
@@ -44,14 +47,13 @@ export default {
     },
     methods: {
         init() {
-            select2();
             if (this.select) {
                 this.select.select2('destroy');
             }
 
             this.select = $(this.$refs[this.id]).select2(this.properties)
-                .on('select2:selecting', this.changing)
-                .on('select2:unselecting', this.changing)
+                .on('select2:selecting', this.selecting)
+                .on('select2:unselecting', this.unselecting)
                 .on('select2:select', this.input)
                 .on('select2:unselect', this.input)
                 .on('change', this.change)
@@ -64,6 +66,14 @@ export default {
         },
         input(e) {
             this.$emit('update:modelValue', this.parseValue(e));
+        },
+        selecting(e) {
+            this.$emit('selecting', e, this.parseValue(e));
+            this.$emit('changing', e, this.parseValue(e));
+        },
+        unselecting(e) {
+            this.$emit('unselecting', e, this.parseValue(e));
+            this.$emit('changing', e, this.parseValue(e));
         },
         changing(e) {
             this.$emit('changing', e, this.parseValue(e));
@@ -88,6 +98,7 @@ export default {
                 width: '100%',
                 theme: 'bootstrap-5',
                 placeholder: this.placeholder,
+                multiple: this.multiple,
                 ...this.settings,
             };
         }
@@ -98,9 +109,8 @@ export default {
     watch: {
         modelValue: {
             handler(val) {
-                this.select.val(val instanceof Array ? [...val] : [val]).trigger('change');
+                this.select.val(val).trigger('change');
             },
-            deep: true
         },
         options: {
             handler() {
