@@ -1,11 +1,9 @@
 <template>
     <select class="form-select"
-            :value="modelValue"
-            @change="input($event)"
             :ref="id"
             :id="id"
             :disabled="disabled"
-            :multiple="multiple">
+            :multiple="multiple ? 'multiple' : false">
         <slot>
             <option v-if="!!options && options.length"
                     v-for="option in options"
@@ -18,12 +16,10 @@
 </template>
 
 <script>
-import $ from 'jquery';
-import 'select2/dist/js/select2.full';
+import select2 from 'select2/dist/js/select2.min.js';
 import 'select2/dist/css/select2.min.css'
 import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 import {v4 as uuid} from 'uuid';
-import {Exception} from "sass";
 
 export default {
     name: "select-search",
@@ -47,6 +43,7 @@ export default {
     },
     methods: {
         init() {
+            select2();
             if (this.select) {
                 this.select.select2('destroy');
             }
@@ -59,7 +56,9 @@ export default {
                 .on('change', this.change)
                 .on('select2:opening', this.opening)
                 .on('select2:closing', this.closing)
-                .on('select2:clearing', this.clearing);
+                .on('select2:clearing', this.clearing)
+                .val(this.value)
+                .trigger('change');
         },
         opening(e) {
             this.$emit('opening', e, this.parseValue(e));
@@ -101,13 +100,16 @@ export default {
                 multiple: this.multiple,
                 ...this.settings,
             };
+        },
+        value() {
+            return typeof this.modelValue === 'object' ? [...this.modelValue] : this.modelValue;
         }
     },
     mounted() {
         this.init();
     },
     watch: {
-        modelValue: {
+        value: {
             handler(val) {
                 this.select.val(val).trigger('change');
             },
