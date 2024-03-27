@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import select2 from 'select2/dist/js/select2.min.js';
+import * as select2 from 'select2';
 import 'select2/dist/css/select2.min.css'
 import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 import {v4 as uuid} from 'uuid';
@@ -43,11 +43,9 @@ export default {
     },
     methods: {
         init() {
-            select2();
             if (this.select) {
                 this.select.select2('destroy');
             }
-
             this.select = $(this.$refs[this.id]).select2(this.properties)
                 .on('select2:selecting', this.selecting)
                 .on('select2:unselecting', this.unselecting)
@@ -106,6 +104,9 @@ export default {
         }
     },
     mounted() {
+        if (typeof select2.default === 'function') {
+            select2.default();
+        }
         this.init();
     },
     watch: {
