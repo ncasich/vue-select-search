@@ -100,7 +100,7 @@ export default {
             };
         },
         value() {
-            return typeof this.modelValue === 'object' ? [...this.modelValue] : this.modelValue;
+            return !!this.modelValue && typeof this.modelValue === 'object' ? [...this.modelValue] : this.modelValue;
         }
     },
     mounted() {
